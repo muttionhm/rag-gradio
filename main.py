@@ -2,22 +2,17 @@ from bot import Robot
 robot=Robot()
 # !pip install gradio
 import asyncio
+from langchain.document_loaders import json_loader,PyPDFLoader
 
 
 import gradio as gr
 
 def process_inputs(input_file, chat_input):
     outputs = ["", ""]
-    if input_file is not None and robot.rag_chain is None:  # 处理文件上传
-        print('******************')
-        print(len(str(input_file)))
-        print(str(input_file))
-        print('******************')
+    if input_file is not None:  # 处理文件上传
         robot.vec_doc(str(input_file))
         outputs[0] = f"你上传的文件内容是：\n{str(input_file)}"
     if chat_input!= "":  # 处理聊天输入
-        print('*******')
-        print(chat_input)
         outputs[1] = robot.chat(chat_input)
     return tuple(outputs)
 
@@ -36,4 +31,3 @@ iface = gr.Interface(process_inputs,
                      allow_flagging=False)
 
 iface.launch(share=True,debug=True)
-
