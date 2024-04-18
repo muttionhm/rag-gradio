@@ -76,7 +76,7 @@ llm = HuggingFacePipeline(
 
 prompt_template = """
 ### [INST] 
-Instruction: 根据你对MMGCN的了解来回答这个问题。
+Instruction: 根据你的了解和下面背景来回答这个问题，如果背景不相关你可以忽略。
 这里有一些背景可以帮助你:
 ​
 {context}
@@ -97,8 +97,8 @@ llm_chain = LLMChain(llm=llm, prompt=prompt)
 class Robot:
   def __init__(self):
     self.rag_chain = None
-  def vec_doc(input_x):
-    print(input_x)
+  def vec_doc(self,input_x):
+    
     loader = PyPDFLoader(file_path=input_x)
     doc = loader.load()
     split = text_splitter.split_documents(doc)
@@ -111,10 +111,10 @@ class Robot:
  {"context": retriever, "question": RunnablePassthrough()}
     | llm_chain
 )
-  def chat(input):
+  def chat(self,input):
     if self.rag_chain is None:
       return '请上传待解析文档'
     else:
       query = input
-      answer = self.rag_chain.invoke(query)
+      answer = self.rag_chain.invoke(query)['text']
       return answer[answer.find('[/INST]')+7:]
